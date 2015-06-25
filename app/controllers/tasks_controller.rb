@@ -6,6 +6,7 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(task_create_params)
     if @task.save
+      flash[:success] = "Created Task: #{@task.name}!"
       redirect_to tasks_path
     else
       flash[:error] = "Task creation failed! #{print_errors(@task)}"
@@ -16,6 +17,7 @@ class TasksController < ApplicationController
   def update
     @task = Task.find(params[:id])
     if @task.update(task_update_params)
+      flash[:success] = "Updated #{@task.name}!"
       redirect_to tasks_path
     else
       flash[:error] = "Task failed to update! #{print_errors(@task)}"
@@ -31,6 +33,14 @@ class TasksController < ApplicationController
       flash[:error] = "Task deletion failed! #{print_errors(@task)}"
       redirect_to tasks_path
     end
+  end
+  
+  def mark_all_complete
+    @tasks = Task.all
+    @tasks.each do |task|
+      task.completed_flag = true
+    end
+    flash[:success] = "Marked All Tasks as Complete"
   end
 
   def task_create_params

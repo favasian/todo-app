@@ -7,12 +7,23 @@
       <strong><%= msg %></strong>
     </div>
   <% end %>
+   <% if msg = flash[:success] %>
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+        &times;
+      </button>
+      <strong><%= msg %></strong>
+    </div>
+  <% end %>
+  <% unless @tasks.blank? %>
+    <%= link_to "Mark All Complete", mark_all_complete_tasks_path, :class=>"btn btn-info", :style=>"margin-bottom: 10px;" %>
+  <% end %>
   <ul class="list-group" id="tasks">
     <% @tasks.each do |task| %>
       <% if task.completed_flag %>
         <li class='list-group-item task-item completed' id="task_<%= task.id %>">
           <%= link_to("Mark Incomplete",
-            task_path(id: task.id, completed_flag: false),
+            task_path(id: task.id, completed_flag: true),
             method: "patch",
             class: "btn btn-sm btn-danger" ) %>
       <% else %>
@@ -33,7 +44,7 @@
     <li class='list-group-item' id="new-task-form">
       <%= form_tag("/tasks", method: "post") do %>
         <%= submit_tag("Add New Task", class: "btn btn-sm btn-primary") %>
-        <%= text_field_tag(:name) %>
+        <%= text_field_tag(:name, "", :placeholder=>"name") %>
       <% end %>
     </li>
   </ul>
